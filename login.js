@@ -190,6 +190,30 @@ app.post('/api/book-room', (req, res) => {
         return res.json({ success: false, message: "สามารถจองล่วงหน้าได้เพียง 7 วันเท่านั้น" });
     }
 
+    // ตรวจสอบว่าผู้ใช้คนนี้มีการจองที่ยังใช้งานอยู่แล้วหรือไม่ (status = จองแล้ว)
+    const checkUserBookingSql = `
+        SELECT * FROM queue_contact
+        WHERE email = ? AND status = 'จองแล้ว'
+    `;
+    
+    console.log('[DEBUG] Checking booking for student_id:', student_id);
+
+    db.query(checkUserBookingSql, [student_id], (err, userBookings) => {
+        if (err) {
+            console.error('[ERROR] book-room checkUserBookingSql failed:', err);
+            return res.json({ success: false, message: "เกิดข้อผิดพลาด" });
+        }
+
+        console.log('[DEBUG] Existing bookings found:', userBookings.length);
+        
+        if (userBookings.length > 0) {
+            console.log('[DEBUG] User already has booking:', userBookings);
+            return res.json({
+                success: false,
+                message: "คุณมีการจองที่ยังใช้งานอยู่ ไม่สามารถจองซ้ำได้ กรุณายกเลิกการจองเดิมก่อน"
+            });
+        }
+
     const checkSql = `
         SELECT * FROM queue_contact
         WHERE subject = ? AND date = ? AND message = ?
@@ -228,6 +252,7 @@ app.post('/api/book-room', (req, res) => {
                 booking: { name, student_id, room, date, timeSlot }
             });
         });
+    });
     });
 });
 
