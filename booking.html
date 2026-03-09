@@ -81,8 +81,12 @@
             document.getElementById('b_student_id').disabled = true;
         }
 
-        // ตั้งค่าให้เลือกวันที่ย้อนหลังไม่ได้
-        document.getElementById('b_date').min = new Date().toISOString().split("T")[0];
+        // ตั้งค่าให้เลือกวันที่ได้เฉพาะ 7 วันล่วงหน้า
+        const today = new Date();
+        const maxDate = new Date(today.getTime() + 7 * 24 * 60 * 60 * 1000);
+        
+        document.getElementById('b_date').min = today.toISOString().split("T")[0];
+        document.getElementById('b_date').max = maxDate.toISOString().split("T")[0];
 
         // 2. โลจิกการกดปุ่มยืนยันจองเหมือนเดิม
         document.getElementById('submitBooking').addEventListener('click', async () => {

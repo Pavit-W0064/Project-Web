@@ -174,6 +174,22 @@ app.post('/api/book-room', (req, res) => {
         return res.json({ success: false, message: "ข้อมูลไม่ครบ" });
     }
 
+    // ตรวจสอบว่าวันที่จองต้องไม่เกิน 7 วัน
+    const bookingDate = new Date(date);
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    bookingDate.setHours(0, 0, 0, 0);
+    
+    const maxDate = new Date(today.getTime() + 7 * 24 * 60 * 60 * 1000);
+    
+    if (bookingDate < today) {
+        return res.json({ success: false, message: "ไม่สามารถจองวันที่ผ่านมาแล้ว" });
+    }
+    
+    if (bookingDate > maxDate) {
+        return res.json({ success: false, message: "สามารถจองล่วงหน้าได้เพียง 7 วันเท่านั้น" });
+    }
+
     const checkSql = `
         SELECT * FROM queue_contact
         WHERE subject = ? AND date = ? AND message = ?
