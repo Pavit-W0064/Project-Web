@@ -11,7 +11,6 @@ async function loadDashboard(){
         const data = await res.json();
 
         document.getElementById("countBookings").textContent = data.countBookings || 0;
-        document.getElementById("countRoomsUsed").textContent = data.countRoomsUsed || 0;
         document.getElementById("countStudents").textContent = data.countStudents || 0;
         document.getElementById("countAdmin").textContent = data.countAdmin || 0;
 
