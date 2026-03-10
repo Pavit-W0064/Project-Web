@@ -327,6 +327,34 @@ app.get('/api/getUsers', (req, res) => {
 });
 
 
+
+
+// ==========================================
+// ADMIN: DELETE STUDENT
+// ==========================================
+app.delete('/api/deleteUser/:id', (req, res) => {
+
+    const id = req.params.id;
+
+    console.log("DELETE ID:", id);
+
+    const sql = "DELETE FROM queue_students WHERE id = ?";
+
+    db.query(sql,[id],(err,result)=>{
+
+        if(err){
+            console.error("SQL ERROR:",err);
+            return res.status(500).json({success:false});
+        }
+
+        console.log("Deleted rows:",result.affectedRows);
+
+        res.json({success:true});
+
+    });
+
+});
+
 // ==========================================
 // 3. DASHBOARD SUMMARY
 // ==========================================
