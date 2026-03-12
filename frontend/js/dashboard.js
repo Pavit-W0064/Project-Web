@@ -26,11 +26,11 @@ const colors = [
     "#6366F1",
     "#22C55E",
     "#EF4444",
-    "#f59e0b",
+    "#F59E0B",
     "#06B6D4",
-    "#8b5cf6",
-    "#14b8a6",
-    "#f97316"
+    "#8B5CF6",
+    "#14B8A6",
+    "#F97316"
 ];
 
 // =============================
@@ -66,7 +66,6 @@ async function loadCharts(){
             data:{
                 labels:dateLabels,
                 datasets:[{
-                    label:"จำนวนการจองต่อวัน",
                     data:dateValues,
                     backgroundColor:colors,
                     borderRadius:8
@@ -76,7 +75,7 @@ async function loadCharts(){
                 responsive:true,
                 maintainAspectRatio:false,
                 plugins:{
-                    legend:{display:true}
+                    legend:{display:false}
                 },
                 scales:{
                     y:{
@@ -158,7 +157,6 @@ async function loadCharts(){
                 data:{
                     labels:timeLabels,
                     datasets:[{
-                        label:"จำนวนการจองตามช่วงเวลา",
                         data:timeValues,
                         backgroundColor:colors,
                         borderRadius:8
@@ -167,6 +165,9 @@ async function loadCharts(){
                 options:{
                     responsive:true,
                     maintainAspectRatio:false,
+                    plugins:{
+                        legend:{display:false}
+                    },
                     scales:{
                         y:{
                             beginAtZero:true,
@@ -199,4 +200,3 @@ setInterval(()=>{
     loadDashboard();
     loadCharts();
 },5000);
-

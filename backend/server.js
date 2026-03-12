@@ -26,8 +26,7 @@ app.use(cors({
   credentials: true,
 }));
 
-app.use(express.static(path.join(__dirname, "../frontend")));
-app.get("/", (req, res) => res.sendFile(path.join(__dirname, "../frontend/index.html")));
+app.use(express.static(path.join(__dirname)));
 
 
 // ==========================================
@@ -48,7 +47,7 @@ app.post('/checkLoginAdminData', (req, res) => {
         if (result.length > 0) {
             res.json({
                 checkAdmin: true,
-                page: "/pages/dashboard.html"
+                page: "/dashboard.html"
             });
         } else {
             res.json({
@@ -165,6 +164,59 @@ app.put('/api/updateAdmin/:id', (req, res) => {
     });
 });
 
+
+// ==========================================
+// ADMIN APPROVE BOOKING
+// ==========================================
+app.post('/api/approveBooking', (req, res) => {
+
+    const { id } = req.body;
+
+    const sql = `
+        UPDATE queue_contact
+        SET status = 'Approved'
+        WHERE id = ?
+    `;
+
+    db.query(sql, [id], (err, result) => {
+
+        if (err) {
+            console.error("Approve error:", err);
+            return res.json({ success: false });
+        }
+
+        res.json({ success: true });
+
+    });
+
+});
+
+// ==========================================
+// ADMIN REJECT BOOKING
+// ==========================================
+app.post('/api/rejectBooking', (req, res) => {
+
+    const { id } = req.body;
+
+    const sql = `
+        UPDATE queue_contact
+        SET status = 'Rejected'
+        WHERE id = ?
+    `;
+
+    db.query(sql, [id], (err, result) => {
+
+        if (err) {
+            console.error("Reject error:", err);
+            return res.json({ success: false });
+        }
+
+        res.json({ success: true });
+
+    });
+
+});
+
 // ==========================================
 // 2. BOOK ROOM
 // ==========================================
@@ -192,10 +244,11 @@ app.post('/api/book-room', (req, res) => {
         return res.json({ success: false, message: "สามารถจองล่วงหน้าได้เพียง 7 วันเท่านั้น" });
     }
 
-    // ตรวจสอบว่าผู้ใช้คนนี้มีการจองที่ยังใช้งานอยู่แล้วหรือไม่ (status = จองแล้ว)
+    // ตรวจสอบว่าผู้ใช้คนนี้มีการจองที่ยังใช้งานอยู่แล้วหรือไม่ (status = Pending)
     const checkUserBookingSql = `
         SELECT * FROM queue_contact
-        WHERE email = ? AND status = 'จองแล้ว'
+        WHERE email = ?
+        AND status IN ('Pending','Approved')
     `;
     
     console.log('[DEBUG] Checking booking for student_id:', student_id);
@@ -264,7 +317,11 @@ app.post('/api/book-room', (req, res) => {
 // ==========================================
 app.get('/api/getBookings', (req, res) => {
     // select all bookings; client treats missing `status` as 'จองแล้ว'
-    const sql = "SELECT * FROM queue_contact ORDER BY date ASC";
+    const sql = `
+        SELECT id,username,email,subject,message,date,status
+        FROM queue_contact
+        ORDER BY date ASC
+    `;
 
     db.query(sql, (err, result) => {
         if (err) return res.json({ success: false });
@@ -528,7 +585,12 @@ function cleanupExpiredBookings() {
     const now = new Date();
     const todayStr = now.toISOString().split('T')[0]; // YYYY-MM-DD
 
-    const sql = "SELECT id, date, message, status FROM queue_contact WHERE status IS NULL OR status = 'จองแล้ว'";
+    const sql = `
+        SELECT id, date, message, status 
+        FROM queue_contact 
+        WHERE status = 'Pending' OR status = 'Approved'
+    `;
+
     db.query(sql, (err, rows) => {
         if (err) {
             console.error('[ERROR] cleanup query failed:', err);

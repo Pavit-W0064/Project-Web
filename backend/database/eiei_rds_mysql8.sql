@@ -39,5 +39,3 @@ CREATE TABLE IF NOT EXISTS `queue_contact`(
     `status` VARCHAR(50) NOT NULL DEFAULT 'จองแล้ว',
     PRIMARY KEY (`id`)
 );
-
-    

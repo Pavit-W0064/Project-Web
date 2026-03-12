@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>ระบบจองห้องสมุด - ตารางการจอง</title>
-    <link rel="stylesheet" href="../css/Project.css">
+    <link rel="stylesheet" href="Project.css">
     <style>
         .queue-container {
             max-width: 950px;
@@ -53,7 +53,7 @@
 
     <nav class="navbar">
         <div class="logo">LibraryBooking</div>
-        <a href="/" class="btn-nav" style="background: #6c757d;">กลับหน้าหลัก</a>
+        <a href="/index.html" class="btn-nav" style="background: #6c757d;">กลับหน้าหลัก</a>
     </nav>
 
     <div class="queue-container">
@@ -74,7 +74,7 @@
         </table>
     </div>
 
-    <script src="../js/config.js"></script>
+    <script src="config.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
         // ดึงข้อมูลผู้ใช้ที่ล็อกอินอยู่
@@ -102,8 +102,24 @@
 
                     // เช็คสิทธิ์: ถ้าคนที่ล็อกอินอยู่ คือเจ้าของคิว ให้โชว์ปุ่ม "ยกเลิก"
                     let actionHtml = '-';
-                    if (currentUser && currentUser.student_id === b.email) {
+                    if (currentUser && currentUser.student_id == b.email) {
                         actionHtml = `<button class="btn-cancel" onclick="cancelBooking(${b.id})">ยกเลิก</button>`;
+                    }
+                    let statusHtml="";
+                    if(b.status==="Approved"){
+                        statusHtml=`<span class="status-approved">อนุมัติการจอง</span>`;
+                    }
+                    else if(b.status==="Pending"){
+                        statusHtml=`<span class="status-pending">จองแล้ว</span>`;
+                    }
+                    else if(b.status==="Rejected"){
+                        statusHtml=`<span class="status-rejected">ไม่อนุมัติ</span>`;
+                    }
+                    else if(b.status==="ยกเลิกโดยระบบ"){
+                        statusHtml=`<span style="color:red">หมดเวลา</span>`;
+                    }
+                    else{
+                        statusHtml=b.status;
                     }
 
                     tr.innerHTML = `
@@ -111,7 +127,7 @@
                         <td style="color: #4f46e5; font-weight: bold;">${b.subject}</td>
                         <td>${b.message}</td>
                         <td>${b.username} <br><span style="font-size: 12px; color: #666;">(${b.email})</span></td>
-                        <td><span class="status-booked">${b.status}</span></td>
+                        <td>${statusHtml}</td>
                         <td>${actionHtml}</td>
                     `;
                     tbody.appendChild(tr);
