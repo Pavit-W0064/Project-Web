@@ -8,7 +8,7 @@
 - open XAMPP
   1. CREATE DATABASE queue_db;
   2. import เลือกไฟล์ eiei.sql
-- C:\Project Cloud\Project-Web-Cloud\backend>node server.js
+- C:\Project Web\Project-Web\backend>node server.js
 
 Localhost (XAMPP)
 http://127.0.0.1:3000/
