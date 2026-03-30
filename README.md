@@ -12,5 +12,13 @@
 Localhost (XAMPP)
 http://127.0.0.1:3000/
 
-Website (Deploy หมดอายุ AWS แล้ว T_T)
-http://15.135.166.115/
+💖 ALL SYSTEM
+[frontend]
+- User
+- หน้าเข้าสู่ระบบแล้วจองห้องสำหรับอ่านหนังสือ (ตรงเข้าสู่ระบบจะเป็นการเพิ่มข้อมูลSQL)
+
+[backend]
+- Admin
+- จัดการระบบหลังบ้านสามารถ Insert, Delete, Update, Search ข้อมูลได้
+
+
