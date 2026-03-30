@@ -12,5 +12,5 @@
 Localhost (XAMPP)
 http://127.0.0.1:3000/
 
-Website (Deploy)
+Website (Deploy หมดอายุ AWS แล้ว T_T)
 http://15.135.166.115/
